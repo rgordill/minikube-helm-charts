@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "amq-producer.fullname" . }}
+  labels:
+    {{- include "amq-producer.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "amq-producer.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "amq-producer.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "amq-producer.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          command: [ "/opt/amq/bin/activemq" ]
+          args:
+            - "producer"
+            {{- if .Values.mq.brokerUrl }}
+            - "--brokerUrl"
+            - {{ .Values.mq.brokerUrl | quote }}
+            {{- end }}
+            {{- if .Values.mq.user }}
+            - "--user"
+            - {{ .Values.mq.user | quote }}
+            {{- end }}
+            {{- if .Values.mq.password }}
+            - "--password"
+            - {{ .Values.mq.password | quote }}
+            {{- end }}
+            {{- if .Values.mq.destination }}
+            - "--destination"
+            - {{ .Values.mq.destination | quote }}
+            {{- end }}
+            {{- if .Values.mq.persistent }}
+            - "--persistent"
+            - {{ .Values.mq.persistent | quote }}
+            {{- end }}
+            {{- if .Values.mq.messageCount }}
+            - "--messageCount"
+            - {{ .Values.mq.messageCount | quote }}
+            {{- end }}
+            {{- if .Values.mq.sleep }}
+            - "--sleep"
+            - {{ .Values.mq.sleep | quote }}
+            {{- end }}
+            {{- if .Values.mq.transactionBatchSize }}
+            - "--transactionBatchSize"
+            - {{ .Values.mq.transactionBatchSize | quote }}
+            {{- end }}
+            {{- if .Values.mq.parallelThreads }}
+            - "--parallelThreads"
+            - {{ .Values.mq.parallelThreads | quote }}
+            {{- end }}
+            {{- if .Values.mq.messageSize }}
+            - "--messageSize"
+            - {{ .Values.mq.messageSize | quote }} 
+            {{- end }}
+            {{- if .Values.mq.textMessageSize }}
+            - "--textMessageSize"
+            - {{ .Values.mq.textMessageSize | quote }}
+            {{- end }}
+            {{- if .Values.mq.message }}
+            - "--message"
+            - {{ .Values.mq.message | quote }}
+            {{- end }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
