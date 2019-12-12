@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "amq-broker.fullname" . }}-mesh
+  labels:
+    {{- include "amq-broker.labels" . | nindent 4 }}
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec:
+  clusterIP: None
+  ports:
+    - name: mesh
+      port: {{ .Values.service.openwire.port }}
+  selector:
+    {{- include "amq-broker.selectorLabels" . | nindent 4 }}

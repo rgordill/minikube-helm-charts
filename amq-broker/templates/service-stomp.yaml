@@ -1,0 +1,16 @@
+{{- if .Values.service.stomp.enabled -}}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "amq-broker.fullname" . }}-stomp
+  labels:
+    {{- include "amq-broker.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.stomp.type }}
+  ports:
+    - port: {{ .Values.service.stomp.port }}
+      targetPort: {{ .Values.service.stomp.port }}
+  selector:
+    {{- include "amq-broker.selectorLabels" . | nindent 4 }}
+{{- end }}

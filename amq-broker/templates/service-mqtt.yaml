@@ -1,0 +1,15 @@
+{{- if .Values.service.mqtt.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "amq-broker.fullname" . }}-mqtt
+  labels:
+    {{- include "amq-broker.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.mqtt.type }}
+  ports:
+    - port: {{ .Values.service.mqtt.port }}
+      targetPort: {{ .Values.service.mqtt.port }}
+  selector:
+    {{- include "amq-broker.selectorLabels" . | nindent 4 }}
+{{- end }}

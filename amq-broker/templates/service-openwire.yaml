@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "amq-broker.fullname" . }}
+  labels:
+    {{- include "amq-broker.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.openwire.type }}
+  ports:
+    - port: {{ .Values.service.openwire.port }}
+      targetPort: {{ .Values.service.openwire.port }}
+  selector:
+    {{- include "amq-broker.selectorLabels" . | nindent 4 }}
