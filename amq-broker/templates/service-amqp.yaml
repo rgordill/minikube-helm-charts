@@ -1,4 +1,4 @@
-{{- if .Values.service.amqp.enabled -}}
+{{- if .Values.service.amqp.enabled }}
 apiVersion: v1
 kind: Service
 metadata:

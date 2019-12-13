@@ -44,12 +44,30 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{/*
-Selector labels
+Common Selector labels
 */}}
 {{- define "amq-broker.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "amq-broker.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
+
+
+{{/*
+Broker Selector labels
+*/}}
+{{- define "amq-broker.brokerSelectorLabels" -}}
+{{ include "amq-broker.selectorLabels" . }}
+app.kubernetes.io/component: broker
+{{- end -}}
+
+{{/*
+Drainer Selector labels
+*/}}
+{{- define "amq-broker.drainerSelectorLabels" -}}
+{{ include "amq-broker.selectorLabels" . }}
+app.kubernetes.io/component: drainer
+{{- end -}}
+
 
 {{/*
 Create the name of the service account to use
@@ -63,20 +81,32 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
-Default userName
+Default userName: not used as they have to be shared by both
 */}}
+{{/* Not used: https://github.com/helm/charts/issues/5167
 {{- define "amq-broker.userName" -}}
 {{- $random3 := randAlphaNum 3 -}}
 {{- $userName := printf "%s%s" "user" $random3 -}}
 {{- default $userName .Values.mq.userName | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+*/}}
+{{- define "amq-broker.userName" -}}
+{{- default "admin" .Values.mq.userName | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 
 {{/*
 Default password
 */}}
+{{/* Not used: https://github.com/helm/charts/issues/5167
 {{- define "amq-broker.password" -}}
 {{- default (randAlphaNum 8) .Values.mq.userName | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+*/}}
+{{- define "amq-broker.password" -}}
+{{- default "admin" .Values.mq.userName | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+
 
 {{/*
 Transports

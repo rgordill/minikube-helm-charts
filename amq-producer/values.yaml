@@ -68,8 +68,8 @@ affinity: {}
 # Producer Params. See https://github.com/apache/activemq/blob/master/activemq-console/src/main/resources/org/apache/activemq/console/command/producer.txt
 mq:
   brokerUrl: "tcp://amq-broker:61616"
-  user: "sample"
-  password: "sample"
+  user: "admin"
+  password: "admin"
   destination: "queue://TEST"
   persistent: "true"
   messageCount: 1000

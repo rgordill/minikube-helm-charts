@@ -67,11 +67,16 @@ tolerations: []
 affinity: {}
 
 mq:
-  # userName: "admin"
-  # password: "admin"
+  userName: "admin"
+  password: "admin"
   queues: ""
   topics: ""
   serializablePackages: ""
-  discoveryType:
-  storageUsageLimit:
-  queueMemoryLimit:
+  # discoveryType:
+  # storageUsageLimit:
+  # queueMemoryLimit:
+
+storage:
+  enabled: true
+  size: 1Gi
+#  storageClass: default
