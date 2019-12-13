@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "amq-consumer.fullname" . }}
+  labels:
+    {{- include "amq-consumer.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "amq-consumer.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "amq-consumer.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "amq-consumer.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          command: [ "/opt/amq/bin/activemq" ]
+          args:
+            - "consumer"
+            {{- if .Values.mq.brokerUrl }}
+            - "--brokerUrl"
+            - {{ .Values.mq.brokerUrl | quote }}
+            {{- end }}
+            {{- if .Values.mq.user }}
+            - "--user"
+            - {{ .Values.mq.user | quote }}
+            {{- end }}
+            {{- if .Values.mq.password }}
+            - "--password"
+            - {{ .Values.mq.password | quote }}
+            {{- end }}
+            {{- if .Values.mq.destination }}
+            - "--destination"
+            - {{ .Values.mq.destination | quote }}
+            {{- end }}
+            {{- if .Values.mq.messageCount }}
+            - "--messageCount"
+            - {{ .Values.mq.messageCount | quote }}
+            {{- end }}
+            {{- if .Values.mq.sleep }}
+            - "--sleep"
+            - {{ .Values.mq.sleep | quote }}
+            {{- end }}
+            {{- if .Values.mq.ackMode }}
+            - "--ackMode"
+            - {{ .Values.mq.ackMode | quote }}
+            {{- end }}
+            {{- if .Values.mq.batchSize }}
+            - "--batchSize"
+            - {{ .Values.mq.batchSize | quote }}
+            {{- end }}
+            {{- if .Values.mq.durable }}
+            - "--durable"
+            - {{ .Values.mq.durable | quote }} 
+            {{- end }}
+            {{- if .Values.mq.durable }}
+            - "--clientId"
+            - {{ include "amq-consumer.clientId" . }}
+            {{- end }}
+            {{- if .Values.mq.parallelThreads }}
+            - "--parallelThreads"
+            - {{ .Values.mq.parallelThreads | quote }}
+            {{- end }}
+            {{- if .Values.mq.bytesAsText }}
+            - "--bytesAsText"
+            - {{ .Values.mq.bytesAsText | quote }}
+            {{- end }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
