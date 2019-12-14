@@ -80,15 +80,29 @@ spec:
               - /opt/amq/bin/readinessProbe.sh
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- if .Values.storage.enabled }}
+      {{- if or .Values.storage.enabled .Values.logging }}
           volumeMounts:
+          {{- if .Values.storage.enabled }}
           - mountPath: /opt/amq/data
-            name: {{ include "amq-broker.fullname" . }}
+            name: {{ include "amq-broker.fullname" . }}-data
+          {{- end }}
+          {{- if .Values.logging }}
+          - mountPath: /opt/amq/conf/log4j.properties
+            name: {{ include "amq-broker.fullname" . }}-cm
+            subPath: log4j.properties
+          {{- end }}
       terminationGracePeriodSeconds: 60
       volumes:
-      - name: {{ include "amq-broker.fullname" . }}
+      {{- if .Values.storage.enabled }}
+      - name: {{ include "amq-broker.fullname" . }}-data
         persistentVolumeClaim:
           claimName: {{ include "amq-broker.fullname" . }}
+      {{- end }}
+      {{- if .Values.logging }}
+      - name: {{ include "amq-broker.fullname" . }}-cm
+        configMap:
+          name: {{ include "amq-broker.fullname" . }}
+      {{- end }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

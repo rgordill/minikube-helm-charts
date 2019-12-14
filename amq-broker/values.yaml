@@ -80,3 +80,10 @@ storage:
   enabled: true
   size: 1Gi
 #  storageClass: default
+
+# controls logging values, if absent, no logging customization is done
+logging: 
+  # Level values: default, debug, debug-all
+  level: debug
+  # Set context like broker, connector, destination
+  context: broker

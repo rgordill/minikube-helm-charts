@@ -80,7 +80,17 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
+      {{- if .Values.logging }}
+          volumeMounts:
+          - mountPath: /opt/amq/conf/log4j.properties
+            name: {{ include "amq-consumer.fullname" . }}-cm
+            subPath: log4j.properties
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: {{ include "amq-consumer.fullname" . }}-cm
+        configMap:
+          name: {{ include "amq-consumer.fullname" . }}
+      {{- end }}      {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}

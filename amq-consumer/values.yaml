@@ -79,3 +79,10 @@ mq:
 #  clientId: null
   parallelThreads: 1
 #  bytesAsText: true
+
+# controls logging values, if absent, no logging customization is done
+logging: 
+  # Level values: default, debug, debug-all
+  level: debug-all
+  # Set context like broker, connector, destination
+  # context: connector
