@@ -11,5 +11,5 @@ spec:
     - port: {{ .Values.service.stomp.port }}
       targetPort: {{ .Values.service.stomp.port }}
   selector:
-    {{- include "amq-broker.selectorLabels" . | nindent 4 }}
+    {{- include "amq-broker.brokerSelectorLabels" . | nindent 4 }}
 {{- end }}

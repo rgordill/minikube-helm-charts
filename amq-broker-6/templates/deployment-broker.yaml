@@ -44,6 +44,10 @@ spec:
             value: {{ .Values.mq.topics }}
           - name: MQ_SERIALIZABLE_PACKAGES
             value: {{ .Values.mq.serializablePackages }}
+          {{- if .Values.storage.enabled }}
+          - name: AMQ_SPLIT
+            value: {{ include "amq-broker.split" . }}
+          {{- end }}
           - name: AMQ_MESH_DISCOVERY_TYPE
             value: {{ .Values.mq.discoveryType }}
           - name: AMQ_MESH_SERVICE_NAME

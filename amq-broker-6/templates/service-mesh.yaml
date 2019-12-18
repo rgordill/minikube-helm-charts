@@ -12,4 +12,4 @@ spec:
     - name: mesh
       port: {{ .Values.service.openwire.port }}
   selector:
-    {{- include "amq-broker.selectorLabels" . | nindent 4 }}
+    {{- include "amq-broker.brokerSelectorLabels" . | nindent 4 }}

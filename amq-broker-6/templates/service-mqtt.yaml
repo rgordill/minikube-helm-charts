@@ -11,5 +11,5 @@ spec:
     - port: {{ .Values.service.mqtt.port }}
       targetPort: {{ .Values.service.mqtt.port }}
   selector:
-    {{- include "amq-broker.selectorLabels" . | nindent 4 }}
+    {{- include "amq-broker.brokerSelectorLabels" . | nindent 4 }}
 {{- end }}

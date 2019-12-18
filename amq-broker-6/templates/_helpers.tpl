@@ -106,6 +106,12 @@ Default password
 {{- default "admin" .Values.mq.userName | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{/*
+Split
+*/}}
+{{- define "amq-broker.split" -}}
+{{- default "true" (.Values.mq.split | quote) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 
 
 {{/*

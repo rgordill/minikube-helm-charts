@@ -10,4 +10,4 @@ spec:
     - port: {{ .Values.service.openwire.port }}
       targetPort: {{ .Values.service.openwire.port }}
   selector:
-    {{- include "amq-broker.selectorLabels" . | nindent 4 }}
+    {{- include "amq-broker.brokerSelectorLabels" . | nindent 4 }}

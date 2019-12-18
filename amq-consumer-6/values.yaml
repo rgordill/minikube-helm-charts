@@ -1,11 +1,11 @@
-# Default values for amq-broker.
+# Default values for amq-consumer.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: registry.access.redhat.com/jboss-amq-6/amq63-openshift:latest
+  repository: registry.redhat.io/jboss-amq-6/amq63-openshift:latest
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -17,7 +17,7 @@ serviceAccount:
   create: true
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: amq-broker
+  name: amq-consumer
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -30,23 +30,22 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-service:
-  amqp:
-    enabled: false
-    # type: ClusterIP
-    # port: 5672
-  mqtt:
-    enabled: false
-    # type: ClusterIP
-    # port: 1883
-  stomp:
-    enabled: false
-    # type: ClusterIP
-    # port: 61613
-  openwire:
-    enabled: true
-    type: ClusterIP
-    port: 61616
+# service:
+#   type: ClusterIP
+#   port: 80
+
+# ingress:
+#   enabled: false
+#   annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # hosts:
+  #   - host: chart-example.local
+  #     paths: []
+  # tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -66,24 +65,24 @@ tolerations: []
 
 affinity: {}
 
+# Consumer Params. See https://github.com/apache/activemq/blob/master/activemq-console/src/main/resources/org/apache/activemq/console/command/consumer.txt
 mq:
-  userName: "admin"
+  brokerUrl: "tcp://amq-broker:61616"
+  user: "admin"
   password: "admin"
-  queues: ""
-  topics: ""
-  serializablePackages: ""
-  # discoveryType:
-  # storageUsageLimit:
-  # queueMemoryLimit:
-
-storage:
-  enabled: true
-  size: 1Gi
-#  storageClass: default
+  destination: "queue://TEST"
+  messageCount: 1000
+  sleep: 1000
+#  ackMode: "AUTO_ACKNOWLEDGE"
+#  batchSize: 10
+  durable: false
+#  clientId: null
+  parallelThreads: 1
+#  bytesAsText: true
 
 # controls logging values, if absent, no logging customization is done
 logging: 
   # Level values: default, debug, debug-all
-  level: debug
+  level: debug-all
   # Set context like broker, connector, destination
-  context: broker
+  # context: connector
